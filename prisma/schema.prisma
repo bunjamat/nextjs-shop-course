@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model post {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  title     String   @db.VarChar(255)
+  content   String?
+  published Boolean  @default(false)
+  authorId  Int
+  user      user     @relation(fields: [authorId], references: [id], map: "Post_authorId_fkey")
+
+  @@index([authorId], map: "Post_authorId_fkey")
+}
+
+model product {
+  id     Int     @id @default(autoincrement())
+  name   String  @db.VarChar(100)
+  price  Int
+  stock  Int
+  image  String  @db.VarChar(150)
+  active Boolean
+}
+
+model profile {
+  id     Int     @id @default(autoincrement())
+  bio    String?
+  userId Int     @unique(map: "Profile_userId_key")
+  user   user    @relation(fields: [userId], references: [id], map: "Profile_userId_fkey")
+}
+
+model user {
+  id      Int      @id @default(autoincrement())
+  email   String   @unique(map: "User_email_key")
+  name    String?
+  post    post[]
+  profile profile?
+}

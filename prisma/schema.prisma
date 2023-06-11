@@ -37,9 +37,11 @@ model profile {
 }
 
 model user {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique(map: "User_email_key")
-  name    String?
-  post    post[]
-  profile profile?
+  id          Int      @id @default(autoincrement())
+  email       String   @unique(map: "User_email_key")
+  username    String?
+  image       String   @db.VarChar(200)
+  create_date DateTime @default(now()) @db.DateTime(0)
+  post        post[]
+  profile     profile?
 }

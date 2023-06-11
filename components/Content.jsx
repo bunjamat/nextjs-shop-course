@@ -8,9 +8,9 @@ const Content = () => {
 
   const [count, setCount] = useState(10);
   const [name, setName] = useState("thongchai");
-  
+
   return (
-    <div className="hero min-h-screen bg-base-200">
+    <div className="hero w-full min-h-screen bg-base-200">
       <div className="hero-content text-center">
         <div className="max-w-md">
           <h1 className="text-5xl font-bold">
@@ -21,25 +21,6 @@ const Content = () => {
             excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
             a id nisi.
           </p>
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              setCount(count + 1);
-            }}
-          >
-            Get Started
-          </button>
-
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              setName("thongchai ");
-            }}
-          >
-            เปลี่ยนชื่อ
-          </button>
-
-
         </div>
       </div>
     </div>

@@ -5,6 +5,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 
+import { FcGoogle } from "react-icons/fc";
+import { MdLogout } from "react-icons/md";
+import { FiShoppingCart } from "react-icons/fi";
+
 const Nav = () => {
   const { data: session } = useSession();
 
@@ -34,12 +38,21 @@ const Nav = () => {
       {/* Desktop Navigation */}
       <div className="sm:flex hidden">
         {session?.user ? (
-          <div className="flex gap-3 md:gap-5">
-            <Link href="/create-prompt" className="black_btn">
+          <div className="flex items-center gap-3 md:gap-5">
+            <Link
+              href="/cart"
+              className="btn btn-primary rounded-full"
+            >
+              <FiShoppingCart className="w-6 h-6" />
               ตระกร้าของฉัน
             </Link>
 
-            <button type="button" onClick={signOut} className="outline_btn">
+            <button
+              type="button"
+              onClick={signOut}
+              className="btn btn-error rounded-full gap-2"
+            >
+              <MdLogout className="w-6 h-6" />
               ออกจากระบบ
             </button>
 
@@ -63,9 +76,10 @@ const Nav = () => {
                   onClick={() => {
                     signIn(provider.id);
                   }}
-                  className="black_btn"
+                  className="btn btn-neutral rounded-full gap-2"
                 >
-                  Sign in
+                  <FcGoogle className="w-6 h-6" />
+                  เข้าสู่ระบบด้วย Google
                 </button>
               ))}
           </>

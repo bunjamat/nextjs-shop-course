@@ -2,15 +2,6 @@
 import React, { useEffect, useState } from "react";
 import ProductItem from "./ProductItem";
 
-const data = [
-  {
-    name: "dddddd111",
-    price: 19999,
-    stock: 100,
-    image: "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
-    active: true,
-  },
-];
 
 export default function GridProduct({ selected }) {
   //useState คือ การเก็บตัวแปรและเซ็ตตัวแปรให้ react
@@ -19,7 +10,7 @@ export default function GridProduct({ selected }) {
   //สร้าง function สำหรับดึงข้อมูล
   const fecthData = async () => {
     //กำหนดเส้นทางที่จะดึงข้อมูล
-    const URL = "/api/product/";
+    const URL = `/api/product?category=${selected}`;
 
     //ทำการดึงข้อมูลด้วยใช้ fetch
     const products = await fetch(URL);
@@ -33,7 +24,7 @@ export default function GridProduct({ selected }) {
 
   useEffect(() => {
     fecthData();
-  }, []);
+  }, [selected]);
 
   return (
     <div className="grid grid-cols-2 gap-2 lg:grid-cols-6 py-4">

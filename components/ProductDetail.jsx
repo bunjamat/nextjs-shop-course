@@ -1,20 +1,72 @@
 "use client";
 
+import { fCurrencyTH } from "@/utils/formatNumber";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 const ProductDetail = ({ product, brand, rate }) => {
+  //เรียกใช้งาน session user
+  const { data: session } = useSession();
 
+  console.log(
+    "🚀 ~ file: ProductDetail.jsx:11 ~ ProductDetail ~ session:",
+    session
+  );
 
-  const handleClick = () => {
-    const newProduct = product;
-    console.log("🚀 ~ file: ProductDetail.jsx:9 ~ handleClick ~ newProduct:", newProduct)
-    return alert("เตรียมเพิ่มสินค้าเข้าตระกร้า", JSON.stringify(newProduct));
+  //จำนวนที่สั่งซื้อ
+  const [qty, setQty] = useState(1);
+
+  const addToCart = async () => {
+    //เช็คว่า login หรือยัง
+    if (!session) {
+      alert("กรุณาเข้าสู่ระบบก่อนสั่งซื้อสินค้า");
+      return;
+    }
+
+    try {
+      //แปลให้ json เป็น string JSON.stringify
+      const newData = JSON.stringify({
+        user_id: session.user?.id,
+        product_id: product.id,
+        product_name: product.name,
+        product_price: product.price,
+        qty: qty,
+      });
+
+      //config axios
+      const config = {
+        method: "post",
+        url: "/api/cart/add",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: newData,
+      };
+      const add = await axios.request(config);
+
+      if (add.statusText === "OK") alert("เพิ่มสินค้าเข้าตระกร้าเรียบร้อยแล้ว");
+    } catch (error) {
+      alert("error ลองใหม่อีกครั้ง");
+    }
   };
 
-  console.log("BASE_URL", process.env.BASE_URL);
+  // ลบจำนวน
+  const decrement = () => {
+    //ถ้าจำนวนมากกว่า 1 ถึงลบ
+    if (qty > 1) {
+      setQty(qty - 1);
+    }
+  };
+  // เพิ่มจำนวน
+  const increment = () => {
+    setQty(qty + 1);
+  };
+  const subTatol = () => {
+    return qty * product.price;
+  };
 
-  
   return (
     <section className="text-gray-700 body-font overflow-hidden w-full bg-white">
       <div className="container px-5 py-24 mx-auto">
@@ -141,45 +193,34 @@ const ProductDetail = ({ product, brand, rate }) => {
               cardigan.
             </p>
             <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
-              <div className="flex">
-                <span className="mr-3">Color</span>
-                <button className="border-2 border-gray-300 rounded-full w-6 h-6 focus:outline-none" />
-                <button className="border-2 border-gray-300 ml-1 bg-gray-700 rounded-full w-6 h-6 focus:outline-none" />
-                <button className="border-2 border-gray-300 ml-1 bg-red-500 rounded-full w-6 h-6 focus:outline-none" />
-              </div>
-              <div className="flex ml-6 items-center">
-                <span className="mr-3">Size</span>
-                <div className="relative">
-                  <select className="rounded border appearance-none border-gray-400 py-2 focus:outline-none focus:border-red-500 text-base pl-3 pr-10">
-                    <option>SM</option>
-                    <option>M</option>
-                    <option>L</option>
-                    <option>XL</option>
-                  </select>
-                  <span className="absolute right-0 top-0 h-full w-10 text-center text-gray-600 pointer-events-none flex items-center justify-center">
-                    <svg
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      className="w-4 h-4"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M6 9l6 6 6-6" />
-                    </svg>
-                  </span>
-                </div>
+              {/* ปุ่มเพิ่มลบ */}
+              <div className="join items-center">
+                <button
+                  className=" btn btn-primary join-item"
+                  onClick={decrement}
+                >
+                  -
+                </button>
+                <span className="join-item input py-2 w-20 text-center">
+                  {qty}
+                </span>
+
+                <button
+                  className=" btn btn-primary join-item"
+                  onClick={increment}
+                >
+                  +
+                </button>
               </div>
             </div>
             <div className="flex">
               <span className="title-font font-medium text-2xl text-gray-900">
-                {product.price}
+                ฿{fCurrencyTH(subTatol())}
               </span>
 
               <button
                 className="flex ml-auto btn btn-primary"
-                onClick={handleClick}
+                onClick={addToCart}
               >
                 เพิ่มเข้าตระกร้า
               </button>

@@ -14,7 +14,6 @@ function ProductItem({ product }) {
       <Link
         href={{
           pathname: `/product/${product.id}`,
-          query: { f: "home" },
         }}
       >
         <div className="overflow-x-hidden  relative ">

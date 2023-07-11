@@ -18,15 +18,21 @@ model post {
   user      user     @relation(fields: [authorId], references: [id], map: "Post_authorId_fkey")
 
   @@index([authorId], map: "Post_authorId_fkey")
+  @@index([authorId], map: "authorId")
 }
 
 model product {
-  id     Int     @id @default(autoincrement())
-  name   String  @db.VarChar(100)
-  price  Int
-  stock  Int
-  image  String  @db.VarChar(150)
-  active Boolean
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(100)
+  price       Int
+  stock       Int
+  image       String   @db.VarChar(150)
+  active      Boolean
+  category_id Int
+  cart        cart[]
+  category    category @relation(fields: [category_id], references: [type_id], onUpdate: Restrict, map: "product_ibfk_1")
+
+  @@index([category_id], map: "category_id")
 }
 
 model profile {
@@ -42,6 +48,30 @@ model user {
   username    String?
   image       String   @db.VarChar(200)
   create_date DateTime @default(now()) @db.DateTime(0)
+  cart        cart[]
   post        post[]
   profile     profile?
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model category {
+  type_id     Int       @id @default(autoincrement())
+  type_name   String    @unique @db.VarChar(100)
+  type_status Int       @default(1)
+  product     product[]
+}
+
+model cart {
+  id            Int      @id @default(autoincrement())
+  user_id       Int
+  product_id    Int
+  product_name  String   @db.VarChar(150)
+  product_price Int
+  qty           Int
+  add_date      DateTime @default(now()) @db.DateTime(0)
+  product       product  @relation(fields: [product_id], references: [id], onUpdate: Restrict, map: "cart_ibfk_1")
+  user          user     @relation(fields: [user_id], references: [id], onUpdate: Restrict, map: "cart_ibfk_2")
+
+  @@index([product_id], map: "product_id")
+  @@index([user_id], map: "user_id")
 }

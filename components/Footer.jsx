@@ -5,7 +5,7 @@ const Footer = () => {
   <div>
     
     <p className="font-bold">
-      ACME Industries Ltd. <br/>Providing reliable tech since 1992
+      Next js My Shop Course. <br/>By ธงชัย บรรจมาตย์ ปี 4 หมู่ 2 สาขาเทคโนโลยีสารสนเทศ
     </p> 
     <p>Copyright © 2023 - All right reserved</p>
   </div> 

@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+import { FcGoogle } from "react-icons/fc";
+import { LuShoppingCart } from "react-icons/lu";
 
 const Nav = () => {
   const { data: session } = useSession();
@@ -34,16 +36,21 @@ const Nav = () => {
       {/* Desktop Navigation */}
       <div className="sm:flex hidden">
         {session?.user ? (
-          <div className="flex gap-3 md:gap-5">
-            <Link href="/create-prompt" className="black_btn">
+          <div className="flex items-center gap-3 md:gap-5">
+            <Link href="/cart" className="btn btn-neutral rounded-full">
+              <LuShoppingCart className="w-6 h-6" />
               ตระกร้าของฉัน
             </Link>
 
-            <button type="button" onClick={signOut} className="outline_btn">
+            <button
+              type="button"
+              onClick={signOut}
+              className="rounded-full btn-outline btn btn-error"
+            >
               ออกจากระบบ
             </button>
 
-            <Link href="/profile">
+            <Link href="/">
               <Image
                 src={session?.user.image}
                 width={37}
@@ -63,9 +70,10 @@ const Nav = () => {
                   onClick={() => {
                     signIn(provider.id);
                   }}
-                  className="black_btn"
+                  className="btn btn-neutral rounded-full gap-2"
                 >
-                  Sign in
+                  <FcGoogle className="w-6 h-6" />
+                  เข้าสู่ระบบด้วย Google
                 </button>
               ))}
           </>
@@ -75,7 +83,7 @@ const Nav = () => {
       {/* Mobile Navigation */}
       <div className="sm:hidden flex relative">
         {session?.user ? (
-          <div className="flex">
+          <div className="flex items-center ">
             <Image
               src={session?.user.image}
               width={37}
@@ -95,7 +103,7 @@ const Nav = () => {
                   My Profile
                 </Link>
                 <Link
-                  href="/create-prompt"
+                  href="/cart"
                   className="dropdown_link"
                   onClick={() => setToggleDropdown(false)}
                 >
@@ -107,7 +115,7 @@ const Nav = () => {
                     setToggleDropdown(false);
                     signOut();
                   }}
-                  className="mt-5 w-full black_btn"
+                  className="mt-5 w-full btn btn-error"
                 >
                   ออกจากระบบ
                 </button>
@@ -124,9 +132,10 @@ const Nav = () => {
                   onClick={() => {
                     signIn(provider.id);
                   }}
-                  className="black_btn"
+                  className="btn btn-accent"
                 >
-                  Sign in
+                  <FcGoogle className="w-6 h-6" />
+                  เข้าสู่ระบบด้วย Google
                 </button>
               ))}
           </>

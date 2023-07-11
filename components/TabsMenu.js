@@ -1,32 +1,32 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RadioGroup } from "@headlessui/react";
 import GridProduct from "./GridProduct";
-const category = [
-  {
-    id: 1,
-    value: 1,
-    name: "เมนูร้อน",
-  },
-  {
-    id: 2,
-    value: 2,
-    name: "เมนูเย็น",
-  },
-  {
-    id: 3,
-    value: 3,
-    name: "เมนูปั่น",
-  },
-  {
-    id: 4,
-    value: 4,
-    name: "อื่นๆ",
-  },
-];
 
 function TabsMenu() {
-  const [selected, setSelected] = useState("3");
+  //useState คือ การเก็บตัวแปรและเซ็ตตัวแปรให้ react
+  const [allCategory, setAllCategory] = useState([]);
+  const [selected, setSelected] = useState(8);
+
+  //สร้าง function สำหรับดึงข้อมูล
+  const fecthCategory = async () => {
+    //กำหนดเส้นทางที่จะดึงข้อมูล
+    const URL = "/api/category/";
+
+    //ทำการดึงข้อมูลด้วยใช้ fetch
+    const category = await fetch(URL);
+
+    //เมื่อได้ข้อมูลมาแล้วแปลงให้เป็น json
+    const result = await category.json();
+
+    // เก็บข้อมูลไว้ใน state หรือ ตัวแปรของ react
+    setAllCategory(result);
+  };
+
+  useEffect(() => {
+    fecthCategory();
+  }, []);
+  if (allCategory.length === 0) return <>loading</>;
 
   return (
     <div className="container relative p-4">
@@ -43,10 +43,10 @@ function TabsMenu() {
             เมนูเครื่องดื่ม
           </RadioGroup.Label>
           <div className="flex shadow-md rounded-full p-2">
-            {category?.map((item) => (
+            {allCategory?.map((item) => (
               <RadioGroup.Option
-                key={item.id}
-                value={item.value}
+                key={item.type_id}
+                value={item.type_id}
                 className={({ active, checked }) =>
                   `${active ? "" : ""}
                   ${checked ? "bg-primary text-white" : "bg-white"}
@@ -64,7 +64,7 @@ function TabsMenu() {
                               checked ? "text-white font-bold" : "text-primary"
                             }`}
                           >
-                            {item.name}
+                            {item.type_name}
                           </RadioGroup.Label>
                         </div>
                       </div>

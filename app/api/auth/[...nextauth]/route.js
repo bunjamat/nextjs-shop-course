@@ -36,7 +36,7 @@ const handler = NextAuth({
       try {
         // เช็คว่ามี user แล้วหรือยัง
         const userExists = await prisma.user.finzdUnique({
-          where: { email: profile.email },
+          where: { email: profile.email    },
         });
 
         // ถ้ายังไม่มี, ให้สร้าง user ใหม่ และบันทึกลงใจ database

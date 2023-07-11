@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 
 export const GET = async (request, { params }) => {
-  console.log("🚀 ~ file: route.js:4 ~ GET ~ params:", params)
+  console.log("🚀 ~ file: route.js:4 ~ GET ~ params:", params);
   try {
     const productCart = await prisma.cart.findMany({
       where: { user_id: parseInt(params.id) },

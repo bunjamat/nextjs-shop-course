@@ -27,11 +27,11 @@ const Cart = () => {
   };
 
   useEffect(() => {
+    //ถ้ามี  user login ถึงให้ดึงข้อมูล
     if (session) {
       fecthData();
     }
   }, [session]);
-
 
   const calculateTotalCost = () => {
     let totalCost = 0;
@@ -43,40 +43,33 @@ const Cart = () => {
       const itemSubtotal = qty * product_price;
       totalCost += itemSubtotal;
     }
-      // console.log("totalCost",totalCost);
+    // console.log("totalCost",totalCost);
     return totalCost;
   };
 
+  function name(params) {}
+
   const totalCost = calculateTotalCost();
 
-
-
-
-  if (!session)
-    return (
-      <div className="pt-20 w-full">
-        <h1 className="text-2lx font-bold">Loading....</h1>
-      </div>
-    );
-
   return (
-    <div className="bg-gray-100 pt-20 w-full">
+    <div className=" bg-gray-100 w-full">
       <h1 className="mb-10 text-center text-2xl font-bold">ตระกร้าของฉัน</h1>
       <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0">
         <div className="rounded-lg md:w-2/3">
-          {allCart?.map((item, idx) => {
+          {allCart?.map((item, index) => {
             return (
               <div
+                key={index}
                 className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start"
-                key={idx}
               >
                 <Image
                   src={item.product.image}
-                  alt={item.product_name}
                   width={300}
                   height={300}
-                  className="w-full object-cover rounded-lg sm:w-40"
+                  alt={item.product_name}
+                  className="w-full rounded-lg sm:w-40"
                 />
+
                 <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
                   <div className="mt-5 sm:mt-0">
                     <h2 className="text-lg font-bold text-gray-900">
@@ -103,7 +96,7 @@ const Cart = () => {
                     </div>
                     <div className="flex items-center space-x-4">
                       <p className="text-sm">
-                        {fCurrencyTH(item.product_price)}฿
+                        ฿{fCurrencyTH(item.product_price)}
                       </p>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -128,20 +121,22 @@ const Cart = () => {
         </div>
         {/* Sub total */}
         <div className="mt-6 h-full rounded-lg border bg-white p-6 shadow-md md:mt-0 md:w-1/3">
-          {/* <div className="mb-2 flex justify-between">
+          <div className="mb-2 flex justify-between">
             <p className="text-gray-700">Subtotal</p>
             <p className="text-gray-700">$129.99</p>
           </div>
           <div className="flex justify-between">
             <p className="text-gray-700">Shipping</p>
             <p className="text-gray-700">$4.99</p>
-          </div> */}
+          </div>
           <hr className="my-4" />
           <div className="flex justify-between">
             <p className="text-lg font-bold">Total</p>
             <div>
-              <p className="mb-1 text-lg font-bold">฿{fCurrencyTH(totalCost)}</p>
-              <p className="text-sm text-gray-700">รวมภาษีมูลค่าเพิ่ม</p>
+              <p className="mb-1 text-lg font-bold">
+                ฿{fCurrencyTH(totalCost)}
+              </p>
+              <p className="text-sm text-gray-700">including VAT</p>
             </div>
           </div>
           <button className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">

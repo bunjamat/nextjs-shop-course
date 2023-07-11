@@ -1,78 +1,90 @@
 "use client";
 
 import { fCurrencyTH } from "@/utils/formatNumber";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useState } from "react";
-import { useSession } from "next-auth/react";
-import Modal from "./Modal";
-import axios from "axios";
 
-const ProductDetail = ({ data }) => {
+const ProductDetail = ({ product, brand, rate }) => {
+  //เรียกใช้งาน session user
   const { data: session } = useSession();
-  const [isOpen, setIsOpen] = useState(false);
-  const [message, setMessage] = useState("");
 
+  console.log(
+    "🚀 ~ file: ProductDetail.jsx:11 ~ ProductDetail ~ session:",
+    session
+  );
+
+  //จำนวนที่สั่งซื้อ
   const [qty, setQty] = useState(1);
 
-  const increment = () => {
-    setQty(qty + 1);
-  };
-
-  const decrement = () => {
-    if (qty > 1) {
-      setQty(qty - 1);
-    }
-  };
-
   const addToCart = async () => {
+    //เช็คว่า login หรือยัง
     if (!session) {
-      setIsOpen(true);
-      setMessage("กรุณาเข้าสู่ระบบก่อนสั่งซื่อสินค้า");
+      alert("กรุณาเข้าสู่ระบบก่อนสั่งซื้อสินค้า");
       return;
     }
 
     try {
+      //แปลให้ json เป็น string JSON.stringify
       const newData = JSON.stringify({
         user_id: session.user?.id,
-        product_id: data.id,
-        product_name: data.name,
-        product_price: data.price,
+        product_id: product.id,
+        product_name: product.name,
+        product_price: product.price,
         qty: qty,
       });
 
-      let config = {
+      //config axios
+      const config = {
         method: "post",
-        maxBodyLength: Infinity,
         url: "/api/cart/add",
         headers: {
           "Content-Type": "application/json",
         },
         data: newData,
       };
-
       const add = await axios.request(config);
 
-      if (add.statusText === "OK") {
-        setMessage(`เพิ่ม ${data.name} ในตระกร้าเรียบร้อย`);
-        setIsOpen(true);
-      }
-    } catch (error) {}
+      if (add.statusText === "OK") alert("เพิ่มสินค้าเข้าตระกร้าเรียบร้อยแล้ว");
+    } catch (error) {
+      alert("error ลองใหม่อีกครั้ง");
+    }
+  };
+
+  // ลบจำนวน
+  const decrement = () => {
+    //ถ้าจำนวนมากกว่า 1 ถึงลบ
+    if (qty > 1) {
+      setQty(qty - 1);
+    }
+  };
+  // เพิ่มจำนวน
+  const increment = () => {
+    setQty(qty + 1);
+  };
+  const subTatol = () => {
+    return qty * product.price;
   };
 
   return (
-    <section className="text-gray-700 body-font overflow-hidden ">
-      <div className="container px-5 py-5 mx-auto">
+    <section className="text-gray-700 body-font overflow-hidden w-full bg-white">
+      <div className="container px-5 py-24 mx-auto">
         <div className="lg:w-4/5 mx-auto flex flex-wrap">
-          <div className="relative flex items-center justify-center lg:w-1/2 w-full object-cover object-center rounded border border-gray-200 ">
-            <Image src={data.image} width={500} height={500} alt={data.name} />
-          </div>
+          <Image
+            src={product.image}
+            width={500}
+            height={500}
+            alt={product.name}
+            className="lg:w-1/2 w-full object-contain object-center rounded border border-gray-200"
+          />
 
           <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
             <h2 className="text-sm title-font text-gray-500 tracking-widest">
-              BRAND NAME
+              {brand}
             </h2>
             <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">
-              {data.name}
+              {product.name}
             </h1>
             <div className="flex mb-4">
               <span className="flex items-center">
@@ -180,7 +192,8 @@ const ProductDetail = ({ data }) => {
               pour-over, neutra jean shorts keytar banjo tattooed umami
               cardigan.
             </p>
-            <div className="flex mt-6  items-center pb-5 border-b-2 border-gray-200 mb-5">
+            <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
+              {/* ปุ่มเพิ่มลบ */}
               <div className="join items-center">
                 <button
                   className=" btn btn-primary join-item"
@@ -199,15 +212,16 @@ const ProductDetail = ({ data }) => {
                 </button>
               </div>
             </div>
-            <div className="flex items-center">
+            <div className="flex">
               <span className="title-font font-medium text-2xl text-gray-900">
-                ฿{fCurrencyTH(data.price)}
+                ฿{fCurrencyTH(subTatol())}
               </span>
+
               <button
                 className="flex ml-auto btn btn-primary"
                 onClick={addToCart}
               >
-                เพิ่มในตระกร้า
+                เพิ่มเข้าตระกร้า
               </button>
               <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
                 <svg
@@ -225,7 +239,6 @@ const ProductDetail = ({ data }) => {
           </div>
         </div>
       </div>
-      <Modal isOpen={isOpen} setIsOpen={setIsOpen} message={message} />
     </section>
   );
 };

@@ -7,6 +7,10 @@ import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
 import { LuShoppingCart } from "react-icons/lu";
 
+import { FcGoogle } from "react-icons/fc";
+import { MdLogout } from "react-icons/md";
+import { FiShoppingCart } from "react-icons/fi";
+
 const Nav = () => {
   const { data: session } = useSession();
 
@@ -37,16 +41,20 @@ const Nav = () => {
       <div className="sm:flex hidden">
         {session?.user ? (
           <div className="flex items-center gap-3 md:gap-5">
-            <Link href="/cart" className="btn btn-neutral rounded-full">
-              <LuShoppingCart className="w-6 h-6" />
+            <Link
+              href="/cart"
+              className="btn btn-primary rounded-full"
+            >
+              <FiShoppingCart className="w-6 h-6" />
               ตระกร้าของฉัน
             </Link>
 
             <button
               type="button"
               onClick={signOut}
-              className="rounded-full btn-outline btn btn-error"
+              className="btn btn-error rounded-full gap-2"
             >
+              <MdLogout className="w-6 h-6" />
               ออกจากระบบ
             </button>
 

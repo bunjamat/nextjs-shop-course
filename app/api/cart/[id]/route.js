@@ -1,40 +1,43 @@
 import prisma from "@/lib/prisma";
 
+//update จำนวนสินค้าในตระกร้า
 export const PATCH = async (request, { params }) => {
+  //รับค่าตัวแปรที่ส่งเข้ามา
   const { qty } = await request.json();
 
   try {
-    await connectToDB();
-
     //ค้นหาว่ามีในตระกร้ารึยัง
     const existingProduct = await prisma.cart.findFirst({
-      where: { user_id: parseInt(user_id), product_id: product_id },
+      where: { id: parseInt(params.id) },
     });
-
+    //ถ้าไม่มี
     if (!existingProduct) {
-      return new Response("Prompt not found", { status: 404 });
+      return new Response("ไม่พบสินค้านี้ในตระกร้า", { status: 404 });
     }
 
     // Update จำนวนที่ส่งเข้ามา
     existingProduct.qty = qty;
 
-    await existingPrompt.save();
+    await prisma.cart.update({
+      where: { id: parseInt(existingProduct.id) },
+      data: existingProduct,
+    });
 
-    return new Response("Successfully updated the Prompts", { status: 200 });
+    return new Response("Successfully updated the Cart", { status: 200 });
   } catch (error) {
-    return new Response("Error Updating Prompt", { status: 500 });
+    return new Response("Error Updating Cart", { status: 500 });
   }
 };
 
+//ลบจำนวนสินค้าในตร้า
 export const DELETE = async (request, { params }) => {
   try {
-    await connectToDB();
-
-    // Find the prompt by ID and remove it
-    await Prompt.findByIdAndRemove(params.id);
-
-    return new Response("Prompt deleted successfully", { status: 200 });
+    //สั่งลบสินค้าในตระกร้าด้วย id
+    const deletedCart = await prisma.cart.delete({
+      where: { id: parseInt(params.id) },
+    });
+    return new Response("Cart deleted successfully", { status: 200 });
   } catch (error) {
-    return new Response("Error deleting prompt", { status: 500 });
+    return new Response("Error deleting Cart", { status: 500 });
   }
 };

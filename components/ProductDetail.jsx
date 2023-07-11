@@ -7,17 +7,19 @@ import { useSession } from "next-auth/react";
 import Modal from "./Modal";
 import axios from "axios";
 
-const ProductDetail = ({ data }) => {
+const ProductDetail = ({ data, name }) => {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
 
   const [qty, setQty] = useState(1);
 
+  //เพิ่มจำนวน
   const increment = () => {
     setQty(qty + 1);
   };
 
+  //ลบจำนวน
   const decrement = () => {
     if (qty > 1) {
       setQty(qty - 1);

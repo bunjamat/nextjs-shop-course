@@ -75,3 +75,29 @@ model cart {
   @@index([product_id], map: "product_id")
   @@index([user_id], map: "user_id")
 }
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model orders {
+  order_id          Int      @id @default(autoincrement())
+  user_id           Int
+  order_fname       String   @db.VarChar(120)
+  order_lname       String   @db.VarChar(120)
+  order_phone       String   @db.VarChar(20)
+  order_email       String   @db.VarChar(150)
+  order_address     String   @db.Text
+  order_grandtotal  Float    @db.Float
+  order_paymentslip String   @db.VarChar(50)
+  order_payment     Int
+  order_shipping    Int
+  order_create      DateTime @db.DateTime(0)
+  order_approve     Int      @default(0)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model orders_items {
+  detail_id  Int @id @default(autoincrement())
+  order_id   Int
+  product_id Int
+  quantity   Int
+  sub_total  Int
+}

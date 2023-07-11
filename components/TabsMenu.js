@@ -4,17 +4,14 @@ import { RadioGroup } from "@headlessui/react";
 import GridProduct from "./GridProduct";
 
 function TabsMenu() {
-  const [selected, setSelected] = useState(8);
-
   //useState คือ การเก็บตัวแปรและเซ็ตตัวแปรให้ react
   const [allCategory, setAllCategory] = useState([]);
-
-  console.log("allCategory", allCategory);
+  const [selected, setSelected] = useState(8);
 
   //สร้าง function สำหรับดึงข้อมูล
-  const fecthData = async () => {
+  const fecthCategory = async () => {
     //กำหนดเส้นทางที่จะดึงข้อมูล
-    const URL = "/api/category";
+    const URL = "/api/category/";
 
     //ทำการดึงข้อมูลด้วยใช้ fetch
     const category = await fetch(URL);
@@ -25,10 +22,11 @@ function TabsMenu() {
     // เก็บข้อมูลไว้ใน state หรือ ตัวแปรของ react
     setAllCategory(result);
   };
-  // useEffect จะทำงาน ก่อนที่ fn จะรีเทิร์น
+
   useEffect(() => {
-    fecthData();
+    fecthCategory();
   }, []);
+  if (allCategory.length === 0) return <>loading</>;
 
   return (
     <div className="container relative p-4">
@@ -45,9 +43,9 @@ function TabsMenu() {
             เมนูเครื่องดื่ม
           </RadioGroup.Label>
           <div className="flex shadow-md rounded-full p-2">
-            {allCategory?.map((item, idx) => (
+            {allCategory?.map((item) => (
               <RadioGroup.Option
-                key={idx}
+                key={item.type_id}
                 value={item.type_id}
                 className={({ active, checked }) =>
                   `${active ? "" : ""}
@@ -70,6 +68,11 @@ function TabsMenu() {
                           </RadioGroup.Label>
                         </div>
                       </div>
+                      {/*  {checked && (
+                        <div className="shrink-0 text-white">
+                          <CheckIcon className="h-6 w-6" />
+                        </div>
+                      )} */}
                     </div>
                   </>
                 )}
@@ -77,7 +80,6 @@ function TabsMenu() {
             ))}
           </div>
         </RadioGroup>
-
         <GridProduct selected={selected} />
       </div>
     </div>

@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
 import { LuShoppingCart } from "react-icons/lu";
-
-import { FcGoogle } from "react-icons/fc";
 import { MdLogout } from "react-icons/md";
 import { FiShoppingCart } from "react-icons/fi";
 

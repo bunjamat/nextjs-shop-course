@@ -1,10 +1,8 @@
 import ProductDetail from "@/components/ProductDetail";
-import React from "react";
+import { fCurrencyTH } from "@/utils/formatNumber";
 
 async function getData(productId) {
-  const res = await fetch(`${process.env.BASE_URL}/api/product/${productId}`, {
-    cache: "no-store",
-  });
+  const res = await fetch(`${process.env.BASE_URL}/api/product/${productId}`,{ cache: 'no-store' });
   // The return value is *not* serialized
   // You can return Date, Map, Set, etc.
 
@@ -20,18 +18,7 @@ async function getData(productId) {
 const Detail = async ({ params }) => {
   const data = await getData(params.id);
 
-  return (
-    <>
-      {/* conponents */}
-      {/*ส่งค่าผ่าน props */}
-
-      {data ? (
-        <ProductDetail product={data} brand={"APPLE"} rate={8} />
-      ) : (
-        <> ไม่พบสินค้าที่ต้องการ </>
-      )}
-    </>
-  );
+  return <ProductDetail data={data} />;
 };
 
 export default Detail;
